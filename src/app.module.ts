@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { EventsModule } from './events/events.module';
+import { CategoriesModule } from './categories/categories.module';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 @Module({
@@ -17,6 +20,8 @@ dotenv.config();
       synchronize: true,
     }),
     UsersModule,
+    EventsModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
