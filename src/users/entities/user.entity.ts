@@ -1,15 +1,24 @@
+import { EventEntity } from 'src/events/entities/event.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToMany(() => EventEntity, (eventEntity) => eventEntity.participants)
+  events_participations: EventEntity[];
+
+  @OneToMany(() => EventEntity, (eventEntity) => eventEntity.creator)
+  events_created: EventEntity[];
 
   @Column({ unique: true })
   username: string;
@@ -21,8 +30,8 @@ export class UserEntity {
   password: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 }
