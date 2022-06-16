@@ -16,7 +16,7 @@ export class CategoryEntity {
   @OneToMany(() => EventEntity, (eventEntity) => eventEntity.category)
   events: Event[];
 
-  @Column({ unique: true })
+  @Column()
   title: string;
 
   @Column()
