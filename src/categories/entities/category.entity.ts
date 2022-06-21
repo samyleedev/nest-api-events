@@ -14,7 +14,7 @@ export class CategoryEntity {
   id: number;
 
   @OneToMany(() => EventEntity, (eventEntity) => eventEntity.category)
-  events: Event[];
+  events: EventEntity[];
 
   @Column({ unique: true })
   title: string;

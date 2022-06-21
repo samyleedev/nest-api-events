@@ -7,9 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('event')
@@ -18,9 +18,11 @@ export class EventEntity {
   id: number;
 
   @ManyToOne(() => CategoryEntity, (categoryEntity) => categoryEntity.events)
+  @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
 
   @ManyToOne(() => UserEntity, (userEntity) => userEntity.events_created)
+  @JoinColumn({ name: 'creator_id' })
   creator: UserEntity;
 
   @ManyToMany(
@@ -48,8 +50,8 @@ export class EventEntity {
   @Column()
   city: string;
 
-  @Column()
-  date_time: Date;
+  // @Column()
+  // date_time: Date;
 
   @Column()
   is_free: boolean;

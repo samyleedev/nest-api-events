@@ -1,3 +1,4 @@
+import { UserRoleEnum } from 'src/enums/user-role.enum';
 import { EventEntity } from 'src/events/entities/event.entity';
 import {
   Entity,
@@ -7,10 +8,24 @@ import {
   UpdateDateColumn,
   ManyToMany,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Entity('user')
 export class UserEntity {
+  @BeforeInsert()
+  async hashPassword() {
+    console.log(bcrypt);
+    this.password = await bcrypt.hash(
+      this.password,
+      Number(process.env.HASH_SALT),
+    );
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,6 +43,9 @@ export class UserEntity {
 
   @Column()
   password: string;
+
+  @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER })
+  role: string;
 
   @CreateDateColumn()
   created_at: Date;

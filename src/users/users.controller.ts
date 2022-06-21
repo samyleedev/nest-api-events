@@ -8,20 +8,27 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { SubscribeUserDto } from './dto/subscribe-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  register(@Body() userData: SubscribeUserDto) {
+    return this.usersService.register(userData);
+  }
+
+  @Post('/login')
+  async login(@Body() credentials: LoginUserDto) {
+    return this.usersService.login(credentials);
   }
 
   @Get()
-  findAll(): Promise<CreateUserDto[]> {
+  findAll(): Promise<SubscribeUserDto[]> {
     return this.usersService.findAll();
   }
 

@@ -1,19 +1,60 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { EventEntity } from './entities/event.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { CategoryEntity } from 'src/categories/entities/category.entity';
 
 @Injectable()
 export class EventsService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+  constructor(
+    @InjectRepository(EventEntity)
+    private eventRepository: Repository<EventEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
+  ) {}
+
+  async create(createEventDto: CreateEventDto) {
+    const event = new EventEntity();
+    event.title = createEventDto.title;
+    event.description = createEventDto.description;
+    event.image_path = createEventDto.image_path;
+    event.is_free = createEventDto.is_free;
+    event.address = createEventDto.address;
+    event.zip_code = createEventDto.zip_code;
+    event.city = createEventDto.city;
+    event.price = createEventDto.price;
+    event.participants = [];
+
+    const newEvent = await this.eventRepository.save(event);
+
+    const author = await this.userRepository.findOne({
+      where: { id: createEventDto.creator_id },
+      relations: ['events_created'],
+    });
+    author.events_created.push(event);
+    await this.userRepository.save(author);
+
+    const category = await this.categoryRepository.findOne({
+      where: { id: createEventDto.category_id },
+      relations: ['events'],
+    });
+    category.events.push(event);
+    await this.categoryRepository.save(category);
+
+    return newEvent;
   }
 
   findAll() {
-    return `This action returns all events`;
+    return this.eventRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} event`;
+    return this.eventRepository.findOne(id);
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
@@ -21,6 +62,25 @@ export class EventsService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} event`;
+    return this.eventRepository.delete(id);
+  }
+
+  async participateToEvent(idEvent: number, idUser: number) {
+    let event = await this.eventRepository.findOne({
+      where: { id: idEvent },
+      relations: ['participants'],
+    });
+
+    let user = await this.userRepository.findOne({
+      where: { id: idUser },
+      relations: ['events_participations'],
+    });
+
+    event.participants.push(user);
+    event = await this.eventRepository.save(event);
+    user.events_participations.push(event);
+    user = await this.userRepository.save(user);
+
+    return { event, user };
   }
 }
