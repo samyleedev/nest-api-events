@@ -12,7 +12,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class SubscribeUserDto {
   @MinLength(3)
   @MaxLength(20)
   @IsNotEmpty()

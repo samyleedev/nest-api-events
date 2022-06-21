@@ -8,10 +8,24 @@ import {
   UpdateDateColumn,
   ManyToMany,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Entity('user')
 export class UserEntity {
+  @BeforeInsert()
+  async hashPassword() {
+    console.log(bcrypt);
+    this.password = await bcrypt.hash(
+      this.password,
+      Number(process.env.HASH_SALT),
+    );
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,9 +43,6 @@ export class UserEntity {
 
   @Column()
   password: string;
-
-  @Column()
-  salt: string;
 
   @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER })
   role: string;
