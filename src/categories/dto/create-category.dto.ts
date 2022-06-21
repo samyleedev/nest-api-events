@@ -1,11 +1,4 @@
-import {
-  IsEmpty,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-  IsDate,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsNotEmpty()

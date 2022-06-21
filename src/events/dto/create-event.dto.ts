@@ -41,9 +41,9 @@ export class CreateEventDto {
   @IsNotEmpty()
   city: string;
 
-  @IsDate()
-  @IsNotEmpty()
-  date_time: Date;
+  // @IsDate()
+  // @IsNotEmpty()
+  // date_time: Date;
 
   @IsBoolean()
   @IsNotEmpty()

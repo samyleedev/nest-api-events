@@ -1,3 +1,4 @@
+import { UserRoleEnum } from 'src/enums/user-role.enum';
 import { EventEntity } from 'src/events/entities/event.entity';
 import {
   Entity,
@@ -28,6 +29,12 @@ export class UserEntity {
 
   @Column()
   password: string;
+
+  @Column()
+  salt: string;
+
+  @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER })
+  role: string;
 
   @CreateDateColumn()
   created_at: Date;

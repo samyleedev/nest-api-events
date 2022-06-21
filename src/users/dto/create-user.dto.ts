@@ -9,11 +9,12 @@ import {
   Min,
   Max,
   IsEmail,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateUserDto {
-  @Min(3)
-  @Max(20)
+  @MinLength(3)
+  @MaxLength(20)
   @IsNotEmpty()
   @IsString()
   username: string;
@@ -22,7 +23,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @Min(8)
+  @MinLength(8)
   @IsNotEmpty()
   password: string;
 }

@@ -50,8 +50,8 @@ export class EventEntity {
   @Column()
   city: string;
 
-  @Column()
-  date_time: Date;
+  // @Column()
+  // date_time: Date;
 
   @Column()
   is_free: boolean;
