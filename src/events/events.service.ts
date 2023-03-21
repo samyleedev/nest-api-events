@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -66,21 +66,25 @@ export class EventsService {
   }
 
   async participateToEvent(idEvent: number, idUser: number) {
-    let event = await this.eventRepository.findOne({
+    const event = await this.eventRepository.findOne({
       where: { id: idEvent },
       relations: ['participants'],
     });
 
-    let user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: idUser },
-      relations: ['events_participations'],
     });
 
-    event.participants.push(user);
-    event = await this.eventRepository.save(event);
-    user.events_participations.push(event);
-    user = await this.userRepository.save(user);
+    if (event.participants.find((u) => u.id === user.id)) {
+      throw new HttpException(
+        "L'utilisateur participe déjà à l'évènement",
+        HttpStatus.CONFLICT,
+      );
+    }
 
-    return { event, user };
+    event.participants.push(user);
+    const updatedEvent = await this.eventRepository.save(event);
+
+    return { event: updatedEvent };
   }
 }
